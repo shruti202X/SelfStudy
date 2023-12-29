@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Alert, Button, Card, Form } from "react-bootstrap";
+import { Alert, Button, Card, Form, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabase/client";
 
@@ -33,13 +33,13 @@ const Register = () => {
       setLoading(true);
       const { data, error } = await register(
         emailRef.current.value,
-        passwordRef.current.value
+        passwordRef.current.value,
       );
       console.log(data);
       console.log(error);
       if (!error && data) {
         setMsg(
-          "Registration Successful. Check your email to confirm your account"
+          "Registration Successful. Check your email to confirm your account",
         );
       }
     } catch (error) {
@@ -49,48 +49,58 @@ const Register = () => {
   };
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Register</h2>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
-            </Form.Group>
-            <Form.Group id="confirm-password">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control type="password" ref={confirmPasswordRef} required />
-            </Form.Group>
-            {errorMsg && (
-              <Alert
-                variant="danger"
-                onClose={() => setErrorMsg("")}
-                dismissible>
-                {errorMsg}
-              </Alert>
-            )}
-            {msg && (
-              <Alert variant="success" onClose={() => setMsg("")} dismissible>
-                {msg}
-              </Alert>
-            )}
-            <div className="text-center mt-2">
-              <Button disabled={loading} type="submit" className="w-50">
-                Register
-              </Button>
-            </div>
-          </Form>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        Already a User? <Link to={"/login"}>Login</Link>
+    <Container
+      className="d-flex align-items-center justify-content-center"
+      style={{ minHeight: "100vh" }}
+    >
+      <div className="w-50">
+        <Card>
+          <Card.Body>
+            <h2 className="text-center mb-4">Register</h2>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" ref={emailRef} required />
+              </Form.Group>
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" ref={passwordRef} required />
+              </Form.Group>
+              <Form.Group id="confirm-password">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={confirmPasswordRef}
+                  required
+                />
+              </Form.Group>
+              {errorMsg && (
+                <Alert
+                  variant="danger"
+                  onClose={() => setErrorMsg("")}
+                  dismissible
+                >
+                  {errorMsg}
+                </Alert>
+              )}
+              {msg && (
+                <Alert variant="success" onClose={() => setMsg("")} dismissible>
+                  {msg}
+                </Alert>
+              )}
+              <div className="text-center mt-2">
+                <Button disabled={loading} type="submit" className="w-50">
+                  Register
+                </Button>
+              </div>
+            </Form>
+          </Card.Body>
+        </Card>
+        <div className="w-100 text-center mt-2">
+          Already a User? <Link to={"/login"}>Login</Link>
+        </div>
       </div>
-    </>
+    </Container>
   );
 };
 
