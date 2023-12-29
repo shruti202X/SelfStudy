@@ -33,7 +33,7 @@ const Subjects = ({ user_id }) => {
       {subjects.map((subject) => (
         <NeonCard key={subject.id} subject={subject} />
       ))}
-      <NeonNewCard />
+      <NeonNewCard user_id={user_id} />
     </>
   );
 };

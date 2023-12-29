@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import ModalNewCard from "./ModalNewCard";
 import "./NeonCard.css";
 
-export default function NeonCard() {
+export default function NeonCard({ user_id }) {
   const [modalShow, setModalShow] = useState(false);
 
   const playSound = () => {
@@ -15,7 +15,11 @@ export default function NeonCard() {
   return (
     <>
       <Card className="plus-card-style" onClick={playSound}></Card>
-      <ModalNewCard show={modalShow} onHide={() => setModalShow(false)} />
+      <ModalNewCard
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        user_id={user_id}
+      />
     </>
   );
 }
