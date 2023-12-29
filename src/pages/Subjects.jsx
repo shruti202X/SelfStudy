@@ -1,7 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import SubjectCard from "../components/SubjectCard";
 import { supabase } from "../supabase/client";
+import NeonCard from "../components/NeonCard";
+import NeonNewCard from "../components/NeonNewCard";
 
 const Subjects = ({ user_id }) => {
   const [subjects, setSubjects] = useState([]);
@@ -28,14 +29,12 @@ const Subjects = ({ user_id }) => {
   }, [supabase]);
 
   return (
-    <div>
-      <h2>Subject List</h2>
-      <ul>
-        {subjects.map((subject) => (
-          <SubjectCard key={subject.id} subject={subject} />
-        ))}
-      </ul>
-    </div>
+    <>
+      {subjects.map((subject) => (
+        <NeonCard key={subject.id} subject={subject} />
+      ))}
+      <NeonNewCard />
+    </>
   );
 };
 

@@ -7,13 +7,9 @@ const Home = () => {
   const { user } = useAuth();
 
   return (
-    <div style={{ fontSize: "24px" }} className="main-content">
-      You are logged in with the following detalis: <hr />
-      email address: {user.email} <hr />
-      id: {user.id}
-      <hr />
+    <main className="main-content">
       <Subjects user_id={user.id} />
-    </div>
+    </main>
   );
 };
 
