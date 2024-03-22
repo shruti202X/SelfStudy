@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import AuthRoute from "./components/AuthRoute";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
+import Tasks from "./pages/Tasks";
 import Login from "./pages/Login";
 import PasswordReset from "./pages/PasswordReset";
 import Register from "./pages/Register";
@@ -15,6 +16,7 @@ const App = () => {
         <Route element={<AuthRoute />}>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/tasks" element={<Tasks />} />
         </Route>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
