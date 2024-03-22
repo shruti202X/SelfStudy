@@ -35,21 +35,7 @@ const Tasks = () => {
   return (
     <div>
       {tasks.map((task, index) => (
-        <TaskAccordianItem
-          key={index}
-          eventKeyValue={index}
-          taskHeadingValue={task.name}
-          checkedValue={task.checked}
-          dueDateValue={task.due_at}
-          expectedTotalMinutesValue={task.expected_total_min}
-          actualTotalMinutesValue={task.actual_total_min}
-          pointsAssignedValue={task.points_assigned}
-          pointsGotValue={task.points_got}
-          priorityValue={task.priority}
-          descriptionValue={task.description}
-          percentageChangeValue={task.percentage_dec}
-          percentageChangeDurationValue={task.percentage_duration}
-        />
+        <TaskAccordianItem key={index} eventKeyValue={index} task={task} />
       ))}
       <TaskAccordianAdd key={tasks.length} eventKeyValue={tasks.length} />
     </div>
