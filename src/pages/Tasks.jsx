@@ -1,58 +1,54 @@
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthProvider";
+import React, { useState, useEffect } from "react";
 import TaskAccordianItem from "../components/TaskAccordianItem";
 import TaskAccordianAdd from "../components/TaskAccordianAdd";
+import { supabase } from "../supabase/client";
+import { useParams } from "react-router-dom";
 
 const Tasks = () => {
-  const { user } = useAuth();
-  const [tasks, setTasks] = useState([
-    {
-      eventKeyValue: "0",
-      taskHeadingValue: "Watch news",
-      checkedValue: false,
-      dueDateValue: "2023-04-01T23:55",
-      expectedTotalMinutesValue: "30",
-      actualTotalMinutesValue: "25",
-      pointsAssignedValue: "10",
-      pointsGotValue: "5",
-      priorityValue: "high",
-      descriptionValue: "news is news!!",
-      percentageChangeValue: "0",
-      percentageChangeDurationValue: "day",
-    },
-    {
-      eventKeyValue: "1",
-      taskHeadingValue: "Watch news2",
-      checkedValue: true,
-      dueDateValue: "2023-04-02T15:00",
-      expectedTotalMinutesValue: "32",
-      actualTotalMinutesValue: "22",
-      pointsAssignedValue: "12",
-      pointsGotValue: "2",
-      priorityValue: "low",
-      descriptionValue: "news is news!!2",
-      percentageChangeValue: "10",
-      percentageChangeDurationValue: "week",
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+  const { subject_id } = useParams();
+
+  useEffect(() => {
+    console.log("subject_id");
+    console.log(subject_id);
+    const fetchTasks = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("Task")
+          .select("*")
+          .eq("subject_id", subject_id);
+
+        if (error) {
+          throw error;
+        } else {
+          setTasks(data);
+          console.log(data);
+        }
+      } catch (error) {
+        console.error("Error fetching tasks:", error.message);
+      }
+    };
+
+    fetchTasks();
+  }, [supabase, subject_id]);
 
   return (
     <div>
       {tasks.map((task, index) => (
         <TaskAccordianItem
           key={index}
-          eventKeyValue={task.eventKeyValue}
-          taskHeadingValue={task.taskHeadingValue}
-          checkedValue={task.checkedValue}
-          dueDateValue={task.dueDateValue}
-          expectedTotalMinutesValue={task.expectedTotalMinutesValue}
-          actualTotalMinutesValue={task.actualTotalMinutesValue}
-          pointsAssignedValue={task.pointsAssignedValue}
-          pointsGotValue={task.pointsGotValue}
-          priorityValue={task.priorityValue}
-          descriptionValue={task.descriptionValue}
-          percentageChangeValue={task.percentageChangeValue}
-          percentageChangeDurationValue={task.percentageChangeDurationValue}
+          eventKeyValue={index}
+          taskHeadingValue={task.name}
+          checkedValue={task.checked}
+          dueDateValue={task.due_at}
+          expectedTotalMinutesValue={task.expected_total_min}
+          actualTotalMinutesValue={task.actual_total_min}
+          pointsAssignedValue={task.points_assigned}
+          pointsGotValue={task.points_got}
+          priorityValue={task.priority}
+          descriptionValue={task.description}
+          percentageChangeValue={task.percentage_dec}
+          percentageChangeDurationValue={task.percentage_duration}
         />
       ))}
       <TaskAccordianAdd key={tasks.length} eventKeyValue={tasks.length} />
