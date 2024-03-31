@@ -2,22 +2,6 @@ import Accordion from "react-bootstrap/Accordion";
 import React, { useState } from "react";
 import { supabase } from "../supabase/client";
 
-/*
-<TaskAccordianItem
-  key={index}
-  taskHeadingValue={task.taskHeadingValue}
-  checkedValue={task.checkedValue}
-  dueDateValue={task.dueDateValue}
-  expectedTotalMinutesValue={task.expectedTotalMinutesValue}
-  actualTotalMinutesValue={task.actualTotalMinutesValue}
-  pointsAssignedValue={task.pointsAssignedValue}
-  pointsGotValue={task.pointsGotValue}
-  priorityValue={task.priorityValue}
-  descriptionValue={task.descriptionValue}
-  percentageChangeValue={task.percentageChangeValue}
-/>
-*/
-
 export default function TaskAccordionItem(propsInitial) {
   const [task, setTask] = useState(propsInitial.task);
 
@@ -39,26 +23,70 @@ export default function TaskAccordionItem(propsInitial) {
     console.log("clicked delete");
   };
   const handleSaveClick = async () => {
-    //calculate points got
-    //change subjects points got and points assigned
-    //or add triggers;
     try {
-      // Make your modifications to the task object here
-      // For example, let's update the task name
+      let pointsGot = 0;
+      if (task.checked && task.due_at.trim() !== "") {
+        if (task.percentage_duration === 0) {
+          pointsGot = task.points_assigned;
+        } else {
+          const currentTime = new Date();
+          const dueDateTime = new Date(task.due_at);
+          const timeDifference = dueDateTime - currentTime;
 
+          let durationInHours;
+          switch (task.percentage_duration) {
+            case 1: // Hour
+              durationInHours = timeDifference / (1000 * 60 * 60);
+              break;
+            case 2: // Day
+              durationInHours = timeDifference / (1000 * 60 * 60 * 24);
+              break;
+            case 3: // Week
+              durationInHours = timeDifference / (1000 * 60 * 60 * 24 * 7);
+              break;
+            default:
+              break;
+          }
+
+          if (durationInHours < 0) {
+            durationInHours = -durationInHours;
+            pointsGot =
+              task.points_assigned - durationInHours * task.percentage_dec;
+          } else {
+            pointsGot =
+              task.points_assigned + durationInHours * task.percentage_dec;
+          }
+        }
+      }
+
+      pointsGot = Math.round(pointsGot);
+
+      // Update points_got in task object
+      setTask({ ...task, points_got: pointsGot });
+
+      const updatedTask = {
+        ...task,
+        points_got: pointsGot,
+      };
+
+      if (task.due_at.trim() === "") {
+        updatedTask.due_at = null;
+      }
+
+      // Update task in the database
       const { error } = await supabase
         .from("Task")
-        .update(task)
-        .eq("task_id", task.task_id); // Update the task with the modified data
+        .update(updatedTask)
+        .eq("task_id", task.task_id);
 
       if (error) {
         throw error;
       }
+
       console.log("Task updated successfully!");
     } catch (error) {
       console.error("Error updating task:", error.message);
     }
-    console.log("trying to save");
   };
   const handleCheckedChange = (e) => {
     setTask({ ...task, checked: e.target.checked });
@@ -79,14 +107,14 @@ export default function TaskAccordionItem(propsInitial) {
     setTask({ ...task, description: e.target.value });
   };
   const handlePriorityChange = (e) => {
-    const priorityString = event.target.value;
+    const priorityString = e.target.value;
     const priorityValue = Object.keys(priority_map).find(
       (key) => priority_map[key] === priorityString,
     );
     setTask({ ...task, priority: priorityValue });
   };
   const handlePercentageChangeDuration = (e) => {
-    const percentageDurationString = event.target.value;
+    const percentageDurationString = e.target.value;
     const percentageDurationValue = Object.keys(percentage_duration_map).find(
       (key) => percentage_duration_map[key] === percentageDurationString,
     );
@@ -136,7 +164,7 @@ export default function TaskAccordionItem(propsInitial) {
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "}
           <input
             type="number"
-            value={task.points_asigned}
+            value={task.points_assigned}
             onChange={handlePointsAssignedChange}
           />{" "}
           <br />
