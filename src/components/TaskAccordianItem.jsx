@@ -19,9 +19,6 @@ export default function TaskAccordionItem(propsInitial) {
     3: "week",
   };
 
-  const handleDeleteClick = () => {
-    console.log("clicked delete");
-  };
   const handleSaveClick = async () => {
     try {
       let pointsGot = 0;
@@ -33,7 +30,7 @@ export default function TaskAccordionItem(propsInitial) {
           const dueDateTime = new Date(task.due_at);
           const timeDifference = dueDateTime - currentTime;
 
-          let durationInHours;
+          let durationInHours = 0;
           switch (task.percentage_duration) {
             case 1: // Hour
               durationInHours = timeDifference / (1000 * 60 * 60);
@@ -215,7 +212,11 @@ export default function TaskAccordionItem(propsInitial) {
           />{" "}
           <br />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <input type="button" value="DELETE" onClick={handleDeleteClick} />
+            <input
+              type="button"
+              value="DELETE"
+              onClick={propsInitial.onDelete}
+            />
             <input type="button" value="SAVE" onClick={handleSaveClick} />
           </div>
         </Accordion.Body>
